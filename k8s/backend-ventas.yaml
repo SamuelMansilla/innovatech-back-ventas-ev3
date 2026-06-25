@@ -2,7 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: innovatech-back-ventas
-  namespace: default
+  labels:
+    app: back-ventas
 spec:
   replicas: 2
   selector:
@@ -14,39 +15,24 @@ spec:
         app: back-ventas
     spec:
       containers:
-      - name: back-ventas
-        image: 495256692270.dkr.ecr.us-east-1.amazonaws.com/innovatech-back-ventas-ev3:latest
+      - name: back-ventas-container
+        image: 251831776279.dkr.ecr.us-east-1.amazonaws.com/innovatech-back-ventas-repo:latest
         ports:
         - containerPort: 8081
-        # 👇 VARIABLES DE ENTORNO INYECTADAS PARA EVITAR EL CRASH 👇
         env:
-        - name: DB_ENDPOINT
-          value: "TU_ENDPOINT_DE_AWS_RDS_AQUÍ.amazonaws.com"
-        - name: DB_PORT
-          value: "3306"
-        - name: DB_NAME
-          value: "innovatech_ventas"
-        - name: DB_USERNAME
-          value: "admin"
-        - name: DB_PASSWORD
-          value: "TU_CONTRASEÑA_RDS"
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "200m"
-            memory: "512Mi"
+        # Forzamos a Spring Boot a usar la base de datos interna de prueba H2
+        - name: SPRING_PROFILES_ACTIVE
+          value: "test"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: back-ventas-service
-  namespace: default
 spec:
-  ports:
-  - port: 8081
-    targetPort: 8081
+  type: ClusterIP
   selector:
     app: back-ventas
-  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081
