@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: innovatech-back-ventas
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: back-ventas
+  template:
+    metadata:
+      labels:
+        app: back-ventas
+    spec:
+      containers:
+      - name: back-ventas
+        image: 495256692270.dkr.ecr.us-east-1.amazonaws.com/innovatech-back-ventas-ev3:latest
+        ports:
+        - containerPort: 8081
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "200m"
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: back-ventas-service
+  namespace: default
+spec:
+  ports:
+  - port: 8081
+    targetPort: 8081
+  selector:
+    app: back-ventas
+  type: ClusterIP
