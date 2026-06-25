@@ -18,6 +18,18 @@ spec:
         image: 495256692270.dkr.ecr.us-east-1.amazonaws.com/innovatech-back-ventas-ev3:latest
         ports:
         - containerPort: 8081
+        # 👇 VARIABLES DE ENTORNO INYECTADAS PARA EVITAR EL CRASH 👇
+        env:
+        - name: DB_ENDPOINT
+          value: "TU_ENDPOINT_DE_AWS_RDS_AQUÍ.amazonaws.com"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "innovatech_ventas"
+        - name: DB_USERNAME
+          value: "admin"
+        - name: DB_PASSWORD
+          value: "TU_CONTRASEÑA_RDS"
         resources:
           requests:
             cpu: "100m"
